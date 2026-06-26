@@ -1,0 +1,158 @@
+- id: 'power_outage_off'
+  alias: 'Blackout розпочався'
+  trigger:
+    - platform: template
+      value_template: "{{ states('sensor.delta_2_ac_in_power') | float(0) < 1 }}"
+  action:
+    - service: notify.send_message
+      target:
+        entity_id: notify.telegram_bot_7879913057_254266061
+      data:
+        message: "Світло вирубили. Кацапи підораси!"
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.switch_rozetka_konditsionera_local_none
+        value: "{{ states('switch.rozetka_konditsionera_local_none') }}"
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.switch_rozetka_kholodilnika_local_none
+        value: "{{ states('switch.rozetka_kholodilnika_local_none') }}"
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.switch_rozetka_cheamagro_local_none
+        value: "{{ states('switch.rozetka_cheamagro_local_none') }}"
+    - service: input_text.set_value
+      data:
+        entity_id: input_text.switch_rozetka_life_local_none
+        value: "{{ states('switch.rozetka_life_local_none') }}"
+    - service: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.power_outage_start
+      data:
+        datetime: "{{ now().timestamp() | timestamp_local }}"
+    # Збереження початкового стану батареї
+    - service: input_number.set_value
+      target:
+        entity_id: input_number.battery_power_start
+      data:
+        value: "{{ states('sensor.battery_power') | float(0) }}"
+    - service: homeassistant.turn_off
+      target:
+        entity_id:
+          - switch.rozetka_cheamagro_local_none
+    - delay: '00:05:00'  # Затримка перед вимкненням гостьової мережі
+    - service: homeassistant.turn_on
+      target:
+        entity_id: switch.miwifi_5c_02_14_30_28_9b_wifi_guest
+  initial_state: "on"
+
+- id: 'power_restore_on'
+  alias: 'Blackout закінчився'
+  trigger:
+    - platform: template
+      value_template: "{{ states('sensor.delta_2_ac_in_power') | float(0) > 0 }}"
+      for:
+        seconds: 30
+  condition:
+    - condition: template
+      value_template: >
+        {{ (as_timestamp(now()) - as_timestamp(states('sensor.uptime') | default(0))) > 120 }}
+  action:
+    - repeat:
+        for_each:
+          - entity: switch.rozetka_cheamagro_local_none
+            state: "{{ states('input_text.switch_rozetka_cheamagro_local_none') }}"
+        sequence:
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ repeat.item.state == 'on' }}"
+                sequence:
+                  - service: homeassistant.turn_on
+                    target:
+                      entity_id: "{{ repeat.item.entity }}"
+              - conditions:
+                  - condition: template
+                    value_template: "{{ repeat.item.state == 'off' }}"
+                sequence:
+                  - service: homeassistant.turn_off
+                    target:
+                      entity_id: "{{ repeat.item.entity }}"
+    - variables:
+        battery_power_start: "{{ states('input_number.battery_power_start') | float(0) }}"
+        battery_power_end:   "{{ states('sensor.battery_power') | float(0) }}"
+        battery_power_used:  "{{ (battery_power_start - battery_power_end) | round(2) }}"
+    - service: notify.send_message
+      target:
+        entity_id: notify.telegram_bot_7879913057_254266061
+      data:
+        message: >
+          {% set outage_start = states('input_datetime.power_outage_start') %}
+          {% if outage_start not in ['unavailable',''] %}
+            Дали світло. Слава Україні!
+            Світла не було {{ ((as_timestamp(now()) - as_timestamp(outage_start)) // 3600) | int }} годин
+            {{ ((as_timestamp(now()) - as_timestamp(outage_start)) % 3600 // 60) | int }} хвилин.
+            За цей час витрачено {{ battery_power_used }} Вт⋅год.
+          {% else %}
+            Дали світло. Слава Україні! Тривалість відключення не вдалося розрахувати.
+            За цей час витрачено {{ battery_power_used }} Вт⋅год.
+          {% endif %}
+    - delay: '00:05:00'
+    - service: homeassistant.turn_off
+      target:
+        entity_id: switch.miwifi_5c_02_14_30_28_9b_wifi_guest
+  initial_state: "on"
+
+- id: notify_low_battery_level
+  alias: Notify Low Battery Level
+  description: "Send notification when battery level reaches 20%"
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.delta_2_main_battery_level
+      below: 20
+  condition:
+    - condition: template
+      value_template: >
+        {{ states('sensor.delta_2_main_battery_level') | float < 20 and
+           states('sensor.delta_2_ac_in_power') | float == 0 }}
+  action:
+    - variables:
+        battery_power_start: "{{ states('input_number.battery_power_start') | float(0) }}"
+        battery_power_now:   "{{ states('sensor.battery_power') | float(0) }}"
+        battery_power_used:  "{{ (battery_power_start - battery_power_now) | round(2) }}"
+    - service: notify.send_message
+      target:
+        entity_id: notify.telegram_bot_7879913057_254266061
+      data:
+        message: >
+          ⚠️ Рівень заряду батареї опустився до 20%!
+          За цей час витрачено {{ battery_power_used }} Вт⋅год.
+          
+          
+          
+- id: auto_reset_rele_naprug_fuse
+  alias: Автоматичне перезавантаження реле без струму
+  trigger:
+    - platform: time_pattern
+      seconds: "/30"
+  condition:
+    - condition: state
+      entity_id: switch.rele_naprug_fuse_switch
+      state: "on"
+    - condition: or
+      conditions:
+        - condition: numeric_state
+          entity_id: sensor.rele_naprug_strum
+          below: 0.01
+        - condition: state
+          entity_id: sensor.rele_naprug_strum
+          state: "0"
+  action:
+    - service: switch.turn_off
+      target:
+        entity_id: switch.rele_naprug_fuse_switch
+    - delay: "00:00:02"
+    - service: switch.turn_on
+      target:
+        entity_id: switch.rele_naprug_fuse_switch
+  mode: single

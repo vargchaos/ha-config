@@ -1,0 +1,48 @@
+
+#server_alliance_down:
+#  name: "server Alliance is down"
+#  message: "Alarma! El tecnica fatal, Alliance Server, La scopata!"
+#  done_message: "Alliance Server знову в мережі."
+#  entity_id: binary_sensor.192_168_0_100
+#  state: "off"
+#  repeat: [30, 120, 1440]
+#  can_acknowledge: false
+#  skip_first: false
+#  notifiers:
+#    - notify.telegram
+
+#server_cheamagro_down:
+#  name: "server CheamAgro is down"
+#  message: "Alarma! El tecnica fatal, CheamAgro Server, La scopata!"
+#  done_message: "CheamAgro Server знову в мережі."
+#  entity_id: binary_sensor.192_168_0_101
+#  state: "off"
+#  repeat: [30, 120, 1440]
+#  can_acknowledge: false
+#  skip_first: false
+#  notifiers:
+#    - notify.telegram
+
+#server_life_down:
+#  name: "server Life is down"
+#  message: "Alarma! El tecnica fatal, Life Server, La scopata!"
+#  done_message: "Life Server знову в мережі."
+#  entity_id: binary_sensor.192_168_0_250
+#  state: "off"
+#  repeat: [30, 120, 1440]
+#  can_acknowledge: false
+#  skip_first: false
+#  notifiers:
+#    - notify.telegram
+
+#server_home_dvr_down:
+#  name: "server Home Dvr is down"
+#  message: "Alarma! El tecnica fatal, Home DVR, La scopata!"
+#  done_message: "Home DVR знову в мережі."
+#  entity_id: binary_sensor.192_168_0_252
+#  state: "off"
+#  repeat: [30, 120, 1440]
+#  can_acknowledge: false
+#  skip_first: false
+#  notifiers:
+#    - notify.telegram

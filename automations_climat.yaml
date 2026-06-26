@@ -1,0 +1,165 @@
+- id: "Зволожувач_on"
+  alias: "Зволожувач on"
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.termometr_vitalnia_humidity
+      below: 40
+  action:
+    - service: homeassistant.turn_on
+      target:
+        entity_id: switch.rozetka_zvolozhuvach_socket_1
+  initial_state: 'on'
+
+
+- id: "Синхронізація_розетки_кондиціонера"
+  alias: "Синхронізація розетки з кондиціонером"
+  trigger:
+    - platform: state
+      entity_id: climate.konditsioner_u_vitalni
+  action:
+    - choose:
+        - conditions:
+            - condition: state
+              entity_id: climate.konditsioner_u_vitalni
+              state: "off"
+          sequence:
+            - service: homeassistant.turn_off
+              target:
+                entity_id: switch.rozetka_konditsionera_local_none
+        - conditions:
+            - condition: not
+              conditions:
+                - condition: state
+                  entity_id: climate.konditsioner_u_vitalni
+                  state: "off"
+          sequence:
+            - service: homeassistant.turn_on
+              target:
+                entity_id: switch.rozetka_konditsionera_local_none
+  mode: restart
+  initial_state: 'on'
+
+- id: fridge_temperature_alert
+  alias: Сповіщення про високу температуру в холодильнику
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.unknown_temperature
+      above: 10
+  action:
+    - service: notify.send_message
+      target:
+        entity_id: notify.telegram_bot_7879913057_254266061
+      data:
+        message: "Агов! В холодильнику занадто тепло"
+  mode: single
+  
+- id: konditsioner_temp_control
+  alias: Автоматизація кондиціонера з урахуванням сезону, часу доби та гістерезису
+  trigger:
+    - platform: state
+      entity_id:
+        - sensor.openweathermap_temperature
+        - sensor.termometr_vitalnia_temperature
+    - platform: time_pattern
+      hours: "/1"
+  condition: []
+  action:
+    - variables:
+        now_hour: "{{ now().hour }}"
+        season_heat: >
+          {% set m = now().month %}
+          {% set d = now().day %}
+          {{ (m > 10) or (m == 10 and d >= 15) or (m < 4) or (m == 4 and d <= 15) }}
+        season_cool: >
+          {% set m = now().month %}
+          {% set d = now().day %}
+          {{ (m > 6 or (m == 6 and d >= 1)) and (m < 9 or (m == 9 and d <= 15)) }}
+        is_day: "{{ 10 <= now_hour < 24 or 0 <= now_hour < 1 }}"
+        target_heat: "{{ 23 if is_day else 22 }}"
+        target_cool: "{{ 25 if is_day else 23 }}"
+        room_temp: "{{ states('sensor.termometr_vitalnia_temperature') | float(0) }}"
+    - choose:
+
+        # Обігрів
+        - conditions:
+            - condition: template
+              value_template: "{{ season_heat }}"
+            - condition: numeric_state
+              entity_id: sensor.openweathermap_temperature
+              below: 15
+            - condition: template
+              value_template: "{{ room_temp < (target_heat | float - 1) }}"
+          sequence:
+            - condition: template
+              value_template: "{{ states('climate.konditsioner_u_vitalni') == 'off' }}"
+            - service: climate.turn_on
+              target:
+                entity_id: climate.konditsioner_u_vitalni
+            - delay: "00:00:05"
+            - service: climate.set_hvac_mode
+              data:
+                hvac_mode: heat
+              target:
+                entity_id: climate.konditsioner_u_vitalni
+            - delay: "00:00:05"
+            - service: climate.set_temperature
+              data:
+                temperature: "{{ target_heat }}"
+              target:
+                entity_id: climate.konditsioner_u_vitalni
+
+        # Вимкнути обігрів при перевищенні порогу
+        - conditions:
+            - condition: template
+              value_template: "{{ season_heat }}"
+            - condition: template
+              value_template: "{{ state_attr('climate.konditsioner_u_vitalni', 'hvac_mode') == 'heat' }}"
+            - condition: template
+              value_template: "{{ room_temp > (target_heat | float + 0.5) }}"
+          sequence:
+            - service: climate.turn_off
+              target:
+                entity_id: climate.konditsioner_u_vitalni
+
+        # Охолодження
+        - conditions:
+            - condition: template
+              value_template: "{{ season_cool }}"
+            - condition: numeric_state
+              entity_id: sensor.openweathermap_temperature
+              above: 25
+            - condition: template
+              value_template: "{{ room_temp > (target_cool | float + 1) }}"
+          sequence:
+            - condition: template
+              value_template: "{{ states('climate.konditsioner_u_vitalni') == 'off' }}"
+            - service: climate.turn_on
+              target:
+                entity_id: climate.konditsioner_u_vitalni
+            - delay: "00:00:05"
+            - service: climate.set_hvac_mode
+              data:
+                hvac_mode: cool
+              target:
+                entity_id: climate.konditsioner_u_vitalni
+            - delay: "00:00:05"
+            - service: climate.set_temperature
+              data:
+                temperature: "{{ target_cool }}"
+              target:
+                entity_id: climate.konditsioner_u_vitalni
+
+        # Вимкнути охолодження при досягненні нижнього порогу
+        - conditions:
+            - condition: template
+              value_template: "{{ season_cool }}"
+            - condition: template
+              value_template: "{{ state_attr('climate.konditsioner_u_vitalni', 'hvac_mode') == 'cool' }}"
+            - condition: template
+              value_template: "{{ room_temp < (target_cool | float - 0.5) }}"
+          sequence:
+            - service: climate.turn_off
+              target:
+                entity_id: climate.konditsioner_u_vitalni
+
+  mode: single

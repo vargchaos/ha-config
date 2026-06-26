@@ -1,0 +1,152 @@
+default_config:
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+#alert: !include alerts.yaml
+automation: !include automations.yaml
+automation blackouts: !include automations_blackout.yaml
+automation cams: !include automations_cam.yaml
+automation climats: !include automations_climat.yaml
+automation devices: !include automations_devise.yaml
+automation energys: !include automations_energy.yaml
+automation light: !include automations_light.yaml
+automation prannya: !include automations_prannya.yaml
+input_text: !include input_text.yaml
+input_datetime: !include input_datetime.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+template: !include sensors.yaml
+
+http:
+  ssl_certificate: /ssl/fullchain.pem
+  ssl_key: /ssl/privkey.pem
+
+python_script:
+
+climate:
+  - platform: smartir
+    name: Кондіціонер у вітальні
+    unique_id: livingroom_ac
+    device_code: !secret climate_device_code
+    controller_data:
+      controller_type: Broadlink
+      remote_entity: remote.broadlink_rc4c_mini
+      delay_secs: 10
+      num_repeats: 1
+    temperature_sensor: sensor.termometr_vitalnia_temperature
+    humidity_sensor: sensor.termometr_vitalnia_humidity
+    power_sensor: switch.smart_plug_socket_1
+
+notify:
+  - name: telegram
+    platform: telegram
+    chat_id: !secret telegram_chat_id
+
+file:
+  - name: discovered_devices_logger
+    filename: discovered_devices.log
+
+input_boolean:
+  reset_statistics:
+    name: Reset Statistics
+    initial: off
+    icon: mdi:refresh
+
+input_number:
+  battery_power_start:
+    name: Початковий стан батареї
+    min: 0
+    max: 10000
+    step: 0.01
+    unit_of_measurement: "Вт⋅год"
+    mode: box
+
+  energy_day_start:
+    name: "Знімок — початок дня (07:00)"
+    min: 0
+    max: 9999999
+    step: 0.001
+    unit_of_measurement: kWh
+    mode: box
+
+  energy_night_start:
+    name: "Знімок — початок ночі (23:00)"
+    min: 0
+    max: 9999999
+    step: 0.001
+    unit_of_measurement: kWh
+    mode: box
+
+  energy_today_day:
+    name: "Сьогодні — денна енергія"
+    min: 0
+    max: 99999
+    step: 0.001
+    unit_of_measurement: kWh
+    mode: box
+
+  energy_today_night:
+    name: "Сьогодні — нічна енергія"
+    min: 0
+    max: 99999
+    step: 0.001
+    unit_of_measurement: kWh
+    mode: box
+
+  energy_month_day:
+    name: "Місяць — денна енергія"
+    min: 0
+    max: 999999
+    step: 0.001
+    unit_of_measurement: kWh
+    mode: box
+
+  energy_month_night:
+    name: "Місяць — нічна енергія"
+    min: 0
+    max: 999999
+    step: 0.001
+    unit_of_measurement: kWh
+    mode: box
+
+homeassistant:
+  allowlist_external_dirs:
+    - "/config"
+  allowlist_external_urls:
+    - "http://192.168.0.213"
+  name: Home
+  country: UA
+  time_zone: Europe/Kyiv
+  auth_providers:
+    - type: homeassistant
+      allow_bypass_login_attempts: false
+
+light:
+  - platform: group
+    name: "Люстра в вітальні"
+    entities:
+      - light.rgbcw_lightbulb1
+      - light.rgbcw_lightbulb2
+      - light.rgbcw_lightbulb3
+      - light.rgbcw_lightbulb4
+
+shell_command:
+  delete_file: rm "{{ path }}"
+  copy_frigate_snapshot: cp "{{ source }}" "{{ dest }}"
+
+recorder:
+  db_url: mysql://ha:ha@core-mariadb/MariaHA?charset=utf8
+  purge_keep_days: 7
+  auto_purge: true
+
+rest_command:
+  win_notify:
+    url: "http://192.168.0.250:8080/notify/"
+    method: POST
+    content_type: application/json
+    payload: >
+      {
+        "key": "998d59cc-6844-46bb-aed1-b57361901adc_o+l3nZHCVfL8qjnu+pA1CQ==",
+        "text": "{{ text }}"
+      }

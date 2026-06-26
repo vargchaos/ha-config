@@ -1,0 +1,130 @@
+- sensor:
+    - name: "AC потужність зарядки"
+      unique_id: ac_in_power
+      unit_of_measurement: 'W'
+      device_class: power
+      state_class: measurement
+      state: "{{ states('sensor.delta_2_ac_in_power') | float(0) }}"
+
+    - name: "AC потужність на виході"
+      unique_id: ac_out_power
+      unit_of_measurement: 'W'
+      device_class: power
+      state_class: measurement
+      state: "{{ states('sensor.delta_2_ac_out_power') | float(0) }}"
+
+    - name: "Рівень заряду батареї"
+      unique_id: battery_level
+      unit_of_measurement: '%'
+      device_class: battery
+      state_class: measurement
+      state: "{{ states('sensor.delta_2_battery_level') | float(0) }}"
+
+    - name: "Сонячна енергія (вхід)"
+      unique_id: solar_in_power
+      unit_of_measurement: 'W'
+      device_class: power
+      state_class: measurement
+      state: "{{ states('sensor.delta_2_solar_in_power') | float(0) }}"
+
+    - name: "Загальне споживання з мережі"
+      unique_id: total_grid_power
+      unit_of_measurement: 'W'
+      device_class: power
+      state_class: measurement
+      state: >
+        {{ states('sensor.rele_naprug_zhivlennia') | float(0) }}
+
+    - name: "Середня напруга"
+      unique_id: average_voltage
+      unit_of_measurement: "В"
+      state_class: measurement
+      state: >
+        {{ (states('sensor.rozetka_konditsionera_local_napruga') | float
+            + states('sensor.rozetka_kholodilnika_local_napruga') | float
+            + states('sensor.rozetka_cheamagro_local_napruga') | float
+            + states('sensor.rozetka_life_local_napruga') | float) / 4 | round(2) }}
+
+    - name: "Максимальна напруга"
+      unique_id: max_voltage
+      unit_of_measurement: "В"
+      state_class: measurement
+      state: >
+        {{ [states('sensor.rozetka_konditsionera_local_napruga') | float,
+             states('sensor.rozetka_kholodilnika_local_napruga') | float,
+             states('sensor.rozetka_cheamagro_local_napruga') | float,
+             states('sensor.rozetka_life_local_napruga') | float] | max }}
+
+    - name: "Ємність, Ecowlow Delta 2 (Ah)"
+      unique_id: main_remain_capacity_ah
+      unit_of_measurement: 'Ah'
+      state_class: measurement
+      state: >
+        {% set cap = states('sensor.delta_2_main_remain_capacity') | float(0) %}
+        {{ cap > 0 and (cap / 1000) | round(2) or 0 }}
+
+    - name: "Потужність батареї Ecowlow Delta 2"
+      unique_id: battery_power
+      unit_of_measurement: 'W'
+      device_class: power
+      state_class: measurement
+      state: >
+        {% set cap = states('sensor.delta_2_main_remain_capacity') | float(0) / 1000 %}
+        {% set volts = states('sensor.delta_2_battery_volts') | float(0) %}
+        {{ cap > 0 and volts > 0 and (cap * volts) | round(2) or 0 }}
+
+    - name: "Потужність батареї Ecowlow Delta 2 max"
+      unique_id: battery_power_max
+      unit_of_measurement: 'W'
+      device_class: power
+      state_class: measurement
+      state: >
+        {% set cap = states('sensor.delta_2_main_design_capacity') | float(0) / 1000 %}
+        {% set volts = states('sensor.delta_2_battery_volts') | float(0) %}
+        {{ cap > 0 and volts > 0 and (cap * volts) | round(2) or 0 }}
+
+    - name: "Ток інвертора"
+      unique_id: delta_2_inverter_current
+      unit_of_measurement: 'A'
+      device_class: current
+      state_class: measurement
+      state: >
+        {% set power = states('sensor.delta_2_total_out_power') | float(0) %}
+        {% set volts = states('sensor.delta_2_battery_volts') | float(0) %}
+        {{ power > 0 and volts > 0 and (power / volts * 0.9) | round(2) or 0 }}
+
+    - name: "Частота мережі"
+      unique_id: constant_50hz
+      unit_of_measurement: "Hz"
+      state: "50"
+
+    - name: "Час роботи сервера"
+      unique_id: ha_uptime
+      unit_of_measurement: "год"
+      state: "{{ (states('sensor.uptime') | float(0) / 3600) | round(2) }}"
+
+    - name: "Скоригована температура"
+      unique_id: corrected_unknown_temperature
+      unit_of_measurement: "°C"
+      device_class: temperature
+      state_class: measurement
+      state: >
+        {% set temp = states('sensor.unknown_local_temperature') | float(0) %}
+        {% if is_state('light.unknown_lamp','off') %}
+          {{ (temp + 5.6) | round(1) }}
+        {% else %}
+          {{ temp | round(1) }}
+        {% endif %}
+
+    - name: "Скоригована вологість"
+      unique_id: corrected_unknown_humidity
+      unit_of_measurement: "%"
+      device_class: humidity
+      state_class: measurement
+      state: >
+        {% set hum = states('sensor.unknown_local_humidity') | float(0) %}
+        {% if is_state('light.unknown_lamp','off') %}
+          {{ (hum - 8) | round(0) }}
+        {% else %}
+          {{ hum | round(0) }}
+        {% endif %}

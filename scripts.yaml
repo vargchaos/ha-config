@@ -1,0 +1,9 @@
+turn_off_all_lights_in_room:
+  alias: Вимкнути все світло у вітальні
+  icon: mdi:weather-night
+  sequence:
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.unknown_lamp
+          - light.lampa_vitalnia

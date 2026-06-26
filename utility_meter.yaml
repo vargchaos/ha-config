@@ -1,0 +1,3 @@
+rele_naprug_daily_energy:
+  source: sensor.rele_naprug_total_energy
+  cycle: daily

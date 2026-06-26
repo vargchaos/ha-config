@@ -1,0 +1,618 @@
+- id: bignas_disk_monitor
+  alias: BigNAS - Моніторинг дисків (температура та здоров'я)
+  description: >
+    Сповіщення в Telegram коли температура диска > 40°C або стан здоров'я змінився на проблемний.
+    Підтримує до 36 дисків.
+  mode: single
+  max_exceeded: silent
+
+  trigger:
+    # --- Температура ---
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk1_temperature
+      above: 40
+      id: temp_disk1
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk2_temperature
+      above: 40
+      id: temp_disk2
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk3_temperature
+      above: 40
+      id: temp_disk3
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk4_temperature
+      above: 40
+      id: temp_disk4
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk5_temperature
+      above: 40
+      id: temp_disk5
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk6_temperature
+      above: 40
+      id: temp_disk6
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk7_temperature
+      above: 40
+      id: temp_disk7
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk8_temperature
+      above: 40
+      id: temp_disk8
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk9_temperature
+      above: 40
+      id: temp_disk9
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk10_temperature
+      above: 40
+      id: temp_disk10
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk11_temperature
+      above: 40
+      id: temp_disk11
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk12_temperature
+      above: 40
+      id: temp_disk12
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk13_temperature
+      above: 40
+      id: temp_disk13
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk14_temperature
+      above: 40
+      id: temp_disk14
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk15_temperature
+      above: 40
+      id: temp_disk15
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk16_temperature
+      above: 40
+      id: temp_disk16
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk17_temperature
+      above: 40
+      id: temp_disk17
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk18_temperature
+      above: 40
+      id: temp_disk18
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk19_temperature
+      above: 40
+      id: temp_disk19
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk20_temperature
+      above: 40
+      id: temp_disk20
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk21_temperature
+      above: 40
+      id: temp_disk21
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk22_temperature
+      above: 40
+      id: temp_disk22
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk23_temperature
+      above: 40
+      id: temp_disk23
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk24_temperature
+      above: 40
+      id: temp_disk24
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk25_temperature
+      above: 40
+      id: temp_disk25
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk26_temperature
+      above: 40
+      id: temp_disk26
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk27_temperature
+      above: 40
+      id: temp_disk27
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk28_temperature
+      above: 40
+      id: temp_disk28
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk29_temperature
+      above: 40
+      id: temp_disk29
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk30_temperature
+      above: 40
+      id: temp_disk30
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk31_temperature
+      above: 40
+      id: temp_disk31
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk32_temperature
+      above: 40
+      id: temp_disk32
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk33_temperature
+      above: 40
+      id: temp_disk33
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk34_temperature
+      above: 40
+      id: temp_disk34
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk35_temperature
+      above: 40
+      id: temp_disk35
+    - platform: numeric_state
+      entity_id: sensor.bignas_disk_disk36_temperature
+      above: 40
+      id: temp_disk36
+
+    # --- Здоров'я ---
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk1_health
+      to: "on"
+      id: health_disk1
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk2_health
+      to: "on"
+      id: health_disk2
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk3_health
+      to: "on"
+      id: health_disk3
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk4_health
+      to: "on"
+      id: health_disk4
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk5_health
+      to: "on"
+      id: health_disk5
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk6_health
+      to: "on"
+      id: health_disk6
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk7_health
+      to: "on"
+      id: health_disk7
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk8_health
+      to: "on"
+      id: health_disk8
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk9_health
+      to: "on"
+      id: health_disk9
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk10_health
+      to: "on"
+      id: health_disk10
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk11_health
+      to: "on"
+      id: health_disk11
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk12_health
+      to: "on"
+      id: health_disk12
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk13_health
+      to: "on"
+      id: health_disk13
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk14_health
+      to: "on"
+      id: health_disk14
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk15_health
+      to: "on"
+      id: health_disk15
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk16_health
+      to: "on"
+      id: health_disk16
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk17_health
+      to: "on"
+      id: health_disk17
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk18_health
+      to: "on"
+      id: health_disk18
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk19_health
+      to: "on"
+      id: health_disk19
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk20_health
+      to: "on"
+      id: health_disk20
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk21_health
+      to: "on"
+      id: health_disk21
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk22_health
+      to: "on"
+      id: health_disk22
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk23_health
+      to: "on"
+      id: health_disk23
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk24_health
+      to: "on"
+      id: health_disk24
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk25_health
+      to: "on"
+      id: health_disk25
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk26_health
+      to: "on"
+      id: health_disk26
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk27_health
+      to: "on"
+      id: health_disk27
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk28_health
+      to: "on"
+      id: health_disk28
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk29_health
+      to: "on"
+      id: health_disk29
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk30_health
+      to: "on"
+      id: health_disk30
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk31_health
+      to: "on"
+      id: health_disk31
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk32_health
+      to: "on"
+      id: health_disk32
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk33_health
+      to: "on"
+      id: health_disk33
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk34_health
+      to: "on"
+      id: health_disk34
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk35_health
+      to: "on"
+      id: health_disk35
+    - platform: state
+      entity_id: binary_sensor.bignas_disk_disk36_health
+      to: "on"
+      id: health_disk36
+
+  variables:
+    disk_info:
+      disk1:
+        name: "Диск 1"
+        model: "WDC WD10EURX"
+        serial: "WD-WCC4J2471705"
+        size: "1 ТБ"
+        dev: "sdm"
+      disk2:
+        name: "Диск 2"
+        model: "WDC WD10PURX"
+        serial: "WD-WCC4J4VEEPJC"
+        size: "1 ТБ"
+        dev: "sdn"
+      disk3:
+        name: "Диск 3"
+        model: "Seagate ST500LT012"
+        serial: "1DG142_W3PM4HTB"
+        size: "500 ГБ"
+        dev: "sdp"
+      disk4:
+        name: "Диск 4"
+        model: "Seagate ST500LT012"
+        serial: "1DG142_S3P8R2N4"
+        size: "500 ГБ"
+        dev: "sdq"
+      disk5:
+        name: "Диск 5"
+        model: "Seagate ST500LT012"
+        serial: "1DG142_W3PGB2YH"
+        size: "500 ГБ"
+        dev: "sdr"
+      disk6:
+        name: "Диск 6"
+        model: "Toshiba DT01ACA050"
+        serial: "566KKHZKS"
+        size: "500 ГБ"
+        dev: "sda"
+      disk7:
+        name: "Диск 7"
+        model: "Toshiba DT01ACA050"
+        serial: "26O2J5BBS"
+        size: "500 ГБ"
+        dev: "sdb"
+      disk8:
+        name: "Диск 8"
+        model: "Toshiba DT01ACA050"
+        serial: "566MMV2KS"
+        size: "500 ГБ"
+        dev: "sdc"
+      disk9:
+        name: "Диск 9"
+        model: "Toshiba DT01ACA050"
+        serial: "26O1YTGAS"
+        size: "500 ГБ"
+        dev: "sdd"
+      disk10:
+        name: "Диск 10"
+        model: "Toshiba DT01ACA050"
+        serial: "26O2DUTBS"
+        size: "500 ГБ"
+        dev: "sde"
+      disk11:
+        name: "Диск 11"
+        model: "Toshiba DT01ACA050"
+        serial: "566MMXLKS"
+        size: "500 ГБ"
+        dev: "sdf"
+      disk12:
+        name: "Диск 12"
+        model: "Toshiba DT01ACA050"
+        serial: "26O21NRBS"
+        size: "500 ГБ"
+        dev: "sdg"
+      disk13:
+        name: "Диск 13"
+        model: "Toshiba DT01ACA050"
+        serial: "95GGRUJBS"
+        size: "500 ГБ"
+        dev: "sdh"
+      disk14:
+        name: "Диск 14"
+        model: "Toshiba DT01ACA050"
+        serial: "9543V8EAS"
+        size: "500 ГБ"
+        dev: "sdi"
+      disk15:
+        name: "Диск 15"
+        model: "Toshiba DT01ACA050"
+        serial: "767N8SVHS"
+        size: "500 ГБ"
+        dev: "sdj"
+      disk16:
+        name: "Диск 16"
+        model: "Toshiba DT01ACA050"
+        serial: "761GD8BKS"
+        size: "500 ГБ"
+        dev: "sdk"
+      disk17:
+        name: "Диск 17"
+        model: "Toshiba DT01ACA050"
+        serial: "43FUM4RNS"
+        size: "500 ГБ"
+        dev: "sdl"
+      disk18:
+        name: "Диск 18 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk19:
+        name: "Диск 19 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk20:
+        name: "Диск 20 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk21:
+        name: "Диск 21 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk22:
+        name: "Диск 22 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk23:
+        name: "Диск 23 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk24:
+        name: "Диск 24 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk25:
+        name: "Диск 25 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk26:
+        name: "Диск 26 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk27:
+        name: "Диск 27 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk28:
+        name: "Диск 28 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk29:
+        name: "Диск 29 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk30:
+        name: "Диск 30 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk31:
+        name: "Диск 31 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk32:
+        name: "Диск 32 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk33:
+        name: "Диск 33 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk34:
+        name: "Диск 34 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk35:
+        name: "Диск 35 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+      disk36:
+        name: "Диск 36 (назва не задана)"
+        model: "Невідомо"
+        serial: "Невідомо"
+        size: "Невідомо"
+        dev: "Невідомо"
+
+    disk_id: >
+      {% set tid = trigger.id %}
+      {% if 'disk' in tid %}
+        {{ tid.split('_')[1] }}
+      {% else %}
+        unknown
+      {% endif %}
+
+    event_type: >
+      {% if trigger.id.startswith('temp_') %}
+        temperature
+      {% else %}
+        health
+      {% endif %}
+
+    current_temp: >
+      {% if event_type == 'temperature' %}
+        {{ trigger.to_state.state }}
+      {% else %}
+        {{ states('sensor.bignas_disk_' ~ disk_id ~ '_temperature') }}
+      {% endif %}
+
+    d_name: "{{ disk_info[disk_id]['name'] if disk_id in disk_info else disk_id }}"
+    d_model: "{{ disk_info[disk_id]['model'] if disk_id in disk_info else 'Невідомо' }}"
+    d_serial: "{{ disk_info[disk_id]['serial'] if disk_id in disk_info else 'Невідомо' }}"
+    d_size: "{{ disk_info[disk_id]['size'] if disk_id in disk_info else 'Невідомо' }}"
+    d_dev: "{{ disk_info[disk_id]['dev'] if disk_id in disk_info else 'Невідомо' }}"
+
+    health_state: >
+      {% set h = states('binary_sensor.bignas_disk_' ~ disk_id ~ '_health') %}
+      {% if h == 'on' %}⚠️ ПРОБЛЕМА{% elif h == 'off' %}✅ OK{% else %}❓ Невідомо{% endif %}
+
+  action:
+    - service: notify.send_message
+      target:
+        entity_id: notify.telegram_bot_7879913057_254266061
+      data:
+        message: >
+          {% if event_type == 'temperature' %}
+          🌡️ *BigNAS — Висока температура диска*
+
+          💾 *{{ d_name }}* (`/dev/{{ d_dev }}`)
+          📦 Модель: `{{ d_model }}`
+          🔖 Серійний: `{{ d_serial }}`
+          📐 Розмір: {{ d_size }}
+
+          🌡 Температура: *{{ current_temp }}°C* (поріг: 40°C)
+          🏥 Здоров'я: {{ health_state }}
+
+          🕐 {{ now().strftime('%d.%m.%Y %H:%M:%S') }}
+          {% else %}
+          🚨 *BigNAS — Проблема зі здоров'ям диска*
+
+          💾 *{{ d_name }}* (`/dev/{{ d_dev }}`)
+          📦 Модель: `{{ d_model }}`
+          🔖 Серійний: `{{ d_serial }}`
+          📐 Розмір: {{ d_size }}
+
+          🏥 Стан: *{{ health_state }}*
+          🌡 Температура: {{ current_temp }}°C
+
+          🕐 {{ now().strftime('%d.%m.%Y %H:%M:%S') }}
+          {% endif %}
+        parse_mode: markdown
+
+- id: log_new_device_telegram
+  alias: Повідомлення про новий пристрій у Telegram та лог
+  trigger:
+    - platform: event
+      event_type: device_registry_updated
+      event_data:
+        action: create
+  variables:
+    log_text: >
+      [{{ now().strftime('%Y-%m-%d %H:%M:%S') }}] Новий пристрій:
+      Назва: {{ device_attr(trigger.event.data.device_id, 'name') | default('невідомо') }},
+      Виробник: {{ device_attr(trigger.event.data.device_id, 'manufacturer') | default('невідомо') }},
+      Модель: {{ device_attr(trigger.event.data.device_id, 'model') | default('невідомо') }},
+      Тип підключення: {{
+        'Wi-Fi' if device_attr(trigger.event.data.device_id, 'connections') | selectattr('0', 'equalto', 'mac') | list | count > 0
+        else 'Bluetooth' if device_attr(trigger.event.data.device_id, 'connections') | selectattr('0', 'equalto', 'bluetooth') | list | count > 0
+        else 'невідомо'
+      }},
+      Ідентифікатор: {{
+        device_attr(trigger.event.data.device_id, 'connections')[0][1]
+        if device_attr(trigger.event.data.device_id, 'connections') | length > 0 else 'немає'
+      }}
+  action:
+    - service: notify.send_message
+      target:
+        entity_id: notify.telegram_bot_7879913057_254266061
+      data:
+        message: >
+          🆕 Новий пристрій знайдено!
+          {{ log_text }}
+    - service: notify.discovered_devices_logger
+      data:
+        message: "{{ log_text }}"

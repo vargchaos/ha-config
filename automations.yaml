@@ -1,0 +1,55 @@
+- id: '1734114254209'
+  alias: Low Battery Notifications & Actions
+  description: ''
+  use_blueprint:
+    path: Blackshome/low-battery-notifications-and-actions.yaml
+    input:
+      exclude_sensors:
+        entity_id: []
+        area_id:
+        - vitalnia
+        - kabinet
+      include_easy_notify: disabled_easy_notify
+      custom_group:
+        entity_id: []
+        area_id:
+        - vitalnia
+        - kabinet
+      custom_group_battery_level: 10
+      battery_level: 10
+      include_persistent_notification: enable_persistent_notification
+      notify_device:
+      - 64102b42ec264f036969374cb9fbf0d6
+      notify_data:
+      - high_priority
+      
+- id: '1765151054870'
+  alias: 'Svitlo Live: Сповіщення + Telegram'
+  use_blueprint:
+    path: svitlo_live/svitlo_schedule_updated_telegram_svitlobot.yaml
+    input:
+      calendar_entity: calendar.svitlo_svitlo_odeska_oblast_4_1
+      schedule_updated_sensor: sensor.schedule_updated
+      storage_helper: input_text.svitlo_rg
+      telegram_storage: input_text.svitlo_telegram_ids
+      svitlobot_storage: input_text.svitlobot_rozklad
+      time_start: 00:00:00
+      time_end: '23:59:59'
+      telegram_chat_ids:
+      - '254266061'
+      channel_key: ''
+      region_image_url: http://odessaguide.net/photos/aerial_center01.jpg
+- id: '1765234248108'
+  alias: 'Svitlo Live: Сповіщення + Telegram'
+  description: ''
+  use_blueprint:
+    path: svitlo_live/svitlo_schedule_updated_notification.yaml
+    input:
+      schedule_calendar: calendar.svitlo_svitlo_odeska_oblast_4_1
+      schedule_updated_sensor: sensor.schedule_updated
+      telegram_chat_id: '254266061'
+      storage_helper: input_text.svitlobot
+      text_output: input_text.svitlobot
+      send_persistent_notification: false
+      emergency_sensor: binary_sensor.svitlo_odeska_oblast_4_1_emergency_outages
+      notify_emergency_changes: false
