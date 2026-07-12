@@ -17,6 +17,8 @@ input_datetime: !include input_datetime.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 template: !include sensors.yaml
+sensor: !include sensors_integration.yaml
+utility_meter: !include utility_meters.yaml
 
 http:
   ssl_certificate: /ssl/fullchain.pem

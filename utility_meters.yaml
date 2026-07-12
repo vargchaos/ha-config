@@ -1,0 +1,3 @@
+rele_phase_a_energy_daily:
+  source: sensor.rele_phase_a_energy
+  cycle: daily

@@ -1,0 +1,7 @@
+- platform: integration
+  source: sensor.rele_naprug_phase_a_power
+  name: rele_phase_a_energy
+  unique_id: rele_phase_a_energy
+  unit_prefix: k
+  round: 3
+  method: trapezoidal

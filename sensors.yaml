@@ -40,9 +40,9 @@
       unit_of_measurement: "В"
       state_class: measurement
       state: >
-        {{ (states('sensor.rozetka_konditsionera_local_napruga') | float
-            + states('sensor.rozetka_kholodilnika_local_napruga') | float
-            + states('sensor.rozetka_cheamagro_local_napruga') | float
+        {{ (states('sensor.rozetka_konditsionera_local_napruga') | float(0)
+            + states('sensor.rozetka_kholodilnika_local_napruga') | float(0)
+            + states('sensor.rozetka_cheamagro_local_napruga') | float(0)
             + states('sensor.rozetka_life_local_napruga') | float) / 4 | round(2) }}
 
     - name: "Максимальна напруга"
